@@ -1,0 +1,21 @@
+<ul class="list">
+    <% users.forEach(function(user){ %>
+        <li class="item">
+            <img src="./images/image.jpg" class="img" alt="">
+            <div class="descriptor">
+                <p>
+                    name: <%= user.name %>
+                </p>
+                <p>
+                    age: <%= user.age %>
+                </p>
+                <p>
+                    is dev: <%= user.isDev %>
+                </p>
+                <p>
+                    id: <%= user.id %>
+                </p>
+            </div>
+        </li>
+        <% }); %>
+</ul>

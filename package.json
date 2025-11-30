@@ -1,0 +1,28 @@
+{
+  "name": "back-teaining",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "seed": "node --watch src/scripts/product.script.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.1",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^17.2.2",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "mongodb": "^6.20.0",
+    "mongoose": "^8.19.1"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.1.0"
+  }
+}
