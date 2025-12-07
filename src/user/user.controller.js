@@ -1,5 +1,4 @@
 import { Router } from "express";
-import {users} from "../users.data.js"
 import path from "path"
 import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt"
@@ -12,7 +11,7 @@ const __dirname = import.meta.dirname
 
 userRouter.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "..", "views", "test.ejs"))
-    res.render("test", {users})
+    // res.render("test", {users})
 })
 
 userRouter.post("/register", async (req, res) => {

@@ -1,53 +1,40 @@
 import express from "express"
 import dotenv from "dotenv"
-import { todoRouter } from "./controllers/index.js"
 import { userRouter } from "./user/user.controller.js"
 import path from "path"
-import {users} from "./users.data.js"
 import { dbConnect } from "./db/db.js"
 import { productRouter } from "./product/product.controller.js"
 import session from "express-session"
 import MongoStore from "connect-mongo"
 
+dotenv.config()
 const PORT = process.env.PORT ?? 3000
+const DB_URL = process.env.DB_URL
+const SECRET = process.env.SECRET
 const app = express()
 app.use(express.json())
-dotenv.config()
 const __dirname = import.meta.dirname
 dbConnect()
 
 app.use(express.static('public'))
 
 app.use(session({
-    secret: 'foo', // TODO: Replace to env
+    secret: SECRET,
     // cookie: { secure: true },
     ttl: 14 * 24 * 60 * 60 , // 10
     saveUninitialized: true,
     resave: false,
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://user1:hello12345@test1.dk3nrv3.mongodb.net/?appName=test1", // TODO: Replace to env
+        mongoUrl: DB_URL,
         dbName: "sessions"
     })
 }));
 
 app.use("/user", userRouter)
-app.use("/todo", todoRouter)
 app.use("/products", productRouter)
 
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
-
-app.get('/', (req, res) => {
-    res.render('pages/home', {title: "home", users})
-})
-
-app.get('/about-us', (req, res) => {
-    res.render('pages/about-us', {title: "about-us"})
-})
-
-app.get('/join-to-team', (req, res) => {
-    res.render('pages/join-to-team', {title: "join-to-team"})
-})
 
 app.get('/products', (req, res) => {
     res.render('pages/products', {title: "products"})
