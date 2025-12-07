@@ -3,8 +3,9 @@ import {users} from "../users.data.js"
 import path from "path"
 import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt"
-import { logger } from "../middleware/logger.js";
 import { userCreateService } from "./user.service.js";
+import { isAdmin } from "../middleware/isAdmin.js";
+import { isAuth } from "../middleware/isAutj.js";
 
 const userRouter = Router()
 const __dirname = import.meta.dirname
@@ -14,34 +15,20 @@ userRouter.get("/", (req, res) => {
     res.render("test", {users})
 })
 
-userRouter.post("/test1", logger, (req, res) => {
-    const {id, name, age, isDev} = req.body
-    const user = {id, name, age, isDev}
-    users.push(user)
-    res.send(user)
-})
-
-userRouter.get("/test/:id", (req, res) => {
-    const slug = req.params.id
-    const user = users.find((el) => el.id == slug)
-    res.json(user)
-})
-
 userRouter.post("/register", async (req, res) => {
-    const firstName = req.body.firstName
-    const lastName = req.body.lastName
-    const email = req.body.email
-    const password = req.body.password
+    const {firstName, lastName, email, password, role} = req.body
 
-    const result = await userCreateService(firstName, lastName, email, password)
+    const result = await userCreateService(firstName, lastName, email, password, role)
 
-    res.send("RESULT", result)
+    res.send("SUCCES REGISTER", result)
 })
 
 userRouter.post("/auth", async (req, res) => {
+    const {email, password} = req.body
+
     try{
-        const existedUser = await User.findOne({email: req.body.email})
-        const isPasswordCorrect = await bcrypt.compare(req.body.password, existedUser.password)
+        const existedUser = await User.findOne({email})
+        const isPasswordCorrect = bcrypt.compare(password, existedUser.password)
 
         if(!isPasswordCorrect){
             res.send("AUTH HAS FAILED")
@@ -55,13 +42,20 @@ userRouter.post("/auth", async (req, res) => {
             email: existedUser.email,
             role: existedUser.role
         }
-        
-        console.log(req.session.user)
-
         res.send("AUTH IS SUCCESSFFUL")
     }catch(e){
         throw new Error("ERROR: ", e.message)
     }
+})
+
+userRouter.get("/logout", (req, res) => {
+    req.session.destroy()
+    res.send("LOGOUT")
+})
+
+userRouter.get("/allUsers", isAdmin, async (req, res) => {
+    const users = await User.find()
+    return res.send(users) 
 })
 
 export {userRouter}

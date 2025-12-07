@@ -10,7 +10,8 @@ export const userCreateService = async(firstName, lastName, email, password) => 
                 firstName,
                 lastName,
                 password: hashedPassword,
-                email
+                email,
+                role: "user"
             }
         
             const user = await User.create(newUser)

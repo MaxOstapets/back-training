@@ -5,6 +5,7 @@ import { userRouter } from "./user/user.controller.js"
 import path from "path"
 import {users} from "./users.data.js"
 import { dbConnect } from "./db/db.js"
+import { productRouter } from "./product/product.controller.js"
 import session from "express-session"
 import MongoStore from "connect-mongo"
 
@@ -19,7 +20,7 @@ app.use(express.static('public'))
 
 app.use(session({
     secret: 'foo', // TODO: Replace to env
-    cookie: { secure: true },
+    // cookie: { secure: true },
     ttl: 14 * 24 * 60 * 60 , // 10
     saveUninitialized: true,
     resave: false,
@@ -27,10 +28,11 @@ app.use(session({
         mongoUrl: "mongodb+srv://user1:hello12345@test1.dk3nrv3.mongodb.net/?appName=test1", // TODO: Replace to env
         dbName: "sessions"
     })
-  }));
-// mongodb+srv://maks:WHkvu$M2er%9Y_F@test1.dk3nrv3.mongodb.net/?appName=test1
+}));
+
 app.use("/user", userRouter)
 app.use("/todo", todoRouter)
+app.use("/products", productRouter)
 
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
